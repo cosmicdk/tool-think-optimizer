@@ -1,26 +1,38 @@
 ---
 name: tool-think-optimizer
-description: Optimize AI tool calling chains and thinking chains. Trigger when user mentions efficiency, parallel execution, or tool chain optimization. Provides batch parallelism, dependency topology, tool selection matrix, hypothesis-driven reasoning, and context management.
+description: |
+  优化AI的工具调用链和思维推理链，减少冗余调用、提升并行度、加速多步骤任务。
+  当用户提到「更高效」「减少调用」「优化流程」「加速任务」「并行执行」「工具链」「思维链」「为什么这么慢」时触发；
+  当任务预估需要3个以上工具调用时自动应用；当用户抱怨响应慢或调用过多轮次时主动启用。
+  
+  提供批量并行、依赖拓扑排序、工具选择矩阵、假设驱动推理、上下文管理等核心策略。
+  这是一个元技能——它帮助AI更聪明地使用自己的工具和推理能力，应在任何复杂多步骤任务中前置应用。
 ---
 
-# Tool-Think Optimizer v1.2
+# 工具链与思维链优化器 (Tool-Think Optimizer) v1.2
 
-A meta-skill that optimizes how AI uses tools and structures reasoning.
+> 经过 3 轮迭代、9 个压测场景验证，平均减少 55% 工具调用轮数。
 
-## 5 Battle-Tested Patterns
+## 5 个实战模式
 
-| Pattern | Scenario | Rounds |
-|---------|----------|:---:|
-| A: Debug | Bug fix | 4-5 |
-| B: Explore | Project understanding | 3-4 |
-| C: Research | Multi-source search | 2-4 |
-| D: Batch | Multi-file edit | 3-4 |
-| E: Deps | Import chain analysis | 3-5 |
+| 模式 | 场景 | 轮数 |
+|------|------|:---:|
+| A: 代码调试 | Bug定位+修复 | 4-5 |
+| B: 项目探索 | 架构理解 | 3-4 |
+| C: 多源检索 | 搜索+汇总 | 2-4 |
+| D: 批量操作 | 多文件修改 | 3-4 |
+| E: 依赖分析 | ImportError/循环导入 | 3-5 |
 
-## Results
+## 核心策略
 
-- 9 test scenarios, 100% pass rate
-- -55% tool call rounds (6.9 → 3.1 avg)
-- 0 → 4.6 parallel calls per task
+- 🔀 批量并行 — 无依赖调用同轮发出
+- 🔗 依赖拓扑 — 图排序避免无效等待
+- 🎯 工具矩阵 — 6种需求的最优选择
+- 🔍 假设驱动 — 形成→验证→修正循环
+- ⚡ 5秒自检 — 每次调用前5个问题
 
-Full SKILL.md available in the skill package.
+## 安装
+
+下载 `tool-think-optimizer.skill` 安装到 AI Agent 技能目录。
+
+> 📦 完整 340 行 SKILL.md 包含在 .skill 包中。
