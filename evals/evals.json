@@ -1,0 +1,67 @@
+{
+  "skill_name": "tool-think-optimizer",
+  "description": "测试 tool-think-optimizer skill 在多种场景下对工具调用效率的改善效果（v1.1扩展版）",
+  "evals": [
+    {
+      "id": 1,
+      "name": "multi-file-debug",
+      "prompt": "我的项目在 /sdcard/Download/myapp 下，运行 python main.py 时报 ImportError: cannot import name 'Database' from 'models'。帮我找到问题并修复。项目大概有 20 个 Python 文件。",
+      "expected_output": "定位到具体文件的具体导入语句，修复并验证。期望工具调用：先用 grep_code 定位导入位置（并行搜索 Database 定义和导入引用），再用 read_file_part 确认上下文，最后 apply_file 修复。避免 read_file 整个 models.py。",
+      "files": [],
+      "assertions_v1.1": [
+        "使用grep_code定位导入引用（非read_file扫描）",
+        "使用read_file_part按需读取（非read_file全量）",
+        "独立工具调用并行执行（grep+memory同时）",
+        "apply_file和验证分两轮执行（非同一轮并行）← v1.1修正",
+        "总轮数 ≤ 4轮"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "multi-source-research",
+      "prompt": "我想了解 React 19 的 Server Components 和 Next.js 15 的 App Router 怎么配合使用。帮我搜索最新信息并总结最佳实践。",
+      "expected_output": "并行搜索多个关键词（React 19 Server Components、Next.js 15 App Router、两者配合使用），汇总后深入1-2个最相关来源，最后给出结构化总结。避免串行逐个搜索。",
+      "files": [],
+      "assertions_v1.1": [
+        "多关键词并行搜索（非串行逐个搜索）",
+        "搜索结果覆盖 ≥ 2个独立角度 ← v1.1修正：衡量质量而非轮数",
+        "总轮数 ≤ 3轮"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "project-exploration",
+      "prompt": "/sdcard/Download/opensource-project 是一个我不熟悉的开源项目。帮我快速理解它的架构、技术栈和核心模块，然后告诉我如果要添加一个新功能该从哪里入手。",
+      "expected_output": "第一轮并行：list_files + grep_context（理解意图）+ query_memory（仅当之前处理过此项目）。第二轮并行读取关键文件。避免逐个文件串行读取。",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "batch-file-edit",
+      "prompt": "我的项目中有 5 个配置文件（都在 /sdcard/Download/myapp/config/ 下）需要把其中的 api.example.com 替换成 api.production.com。帮我一次性全部修改。",
+      "expected_output": "第一轮 find_files 定位配置文件，第二轮并行 apply_file 修改所有5个不同文件，第三轮并行验证。避免逐个文件串行修改。",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "avoid-redundant-reads",
+      "prompt": "刚才你帮我修改了 /sdcard/Download/myapp/src/utils.py 的第 45 行，现在我需要在这个文件里再改第 78 行的 LOG_LEVEL 配置。",
+      "expected_output": "直接使用 read_file_part 读取第 78 行附近，然后 apply_file。避免重新 read_file 整个文件（因为之前已经读过）。",
+      "files": []
+    },
+    {
+      "id": 6,
+      "name": "cross-file-refactor",
+      "prompt": "在 /sdcard/Download/refactor-test 项目中，把 fetchUserData 函数重命名为 getUserById。确保所有引用都更新（4个文件，7处引用）。",
+      "expected_output": "第一轮 grep_code 找出所有引用，第二轮起按文件分组并行 apply_file 修改不同文件，最后 grep_code 验证零残留。总轮数 ≤ 5轮。",
+      "files": []
+    },
+    {
+      "id": 7,
+      "name": "circular-import",
+      "prompt": "/sdcard/Download/circular-import-bug 项目运行报 ImportError。帮我找到并修复循环导入问题（涉及3个模块的交叉依赖）。",
+      "expected_output": "第一轮并行：grep_code 提取所有 import 语句构建依赖图 + read_file 入口文件。分析图发现循环边，精准定位后修复。总轮数 ≤ 4轮。",
+      "files": []
+    }
+  ]
+}
